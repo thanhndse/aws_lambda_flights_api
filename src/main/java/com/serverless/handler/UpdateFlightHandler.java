@@ -5,25 +5,31 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serverless.ApiGatewayResponse;
-import com.serverless.Chair;
-import com.serverless.ChairsManagement;
+import com.serverless.Flight;
+import com.serverless.FlightsManagement;
 import lombok.SneakyThrows;
 
 import java.util.Collections;
 import java.util.Map;
 
-public class CreateChairHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
+public class UpdateFlightHandler implements RequestHandler<Map<String, Object>, ApiGatewayResponse> {
     @SneakyThrows
     @Override
     public ApiGatewayResponse handleRequest(Map<String, Object> stringObjectMap, Context context) {
         JsonNode body = new ObjectMapper().readTree((String) stringObjectMap.get("body"));
-        Chair chair = new Chair();
-        chair.setName(body.get("name").asText());
-        chair.setColor(body.get("color").asText());
-        Chair newChair = ChairsManagement.getInstant().createChair(chair);
+        Flight flight = new Flight();
+        flight.setType(body.get("type").asText());
+        flight.setFrom(body.get("from").asText());
+        flight.setTo(body.get("to").asText());
+        flight.setTime(body.get("time").asText());
+
+        Map<String,String> pathParameters =  (Map<String,String>)stringObjectMap.get("pathParameters");
+        String flightId = pathParameters.get("id");
+
+        Flight updatedFlight = FlightsManagement.getInstant().updateFlight(flightId, flight);
         return ApiGatewayResponse.builder()
                 .setStatusCode(200)
-                .setObjectBody(newChair)
+                .setObjectBody(updatedFlight)
                 .setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless"))
                 .build();
     }

@@ -1,1 +1,1 @@
-# aws_lambda_chairs_api
+# aws_lambda_flights_api
