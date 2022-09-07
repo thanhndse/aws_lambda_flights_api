@@ -49,4 +49,14 @@ public class FlightsManagement {
             throw new RuntimeException("Cannot find flight with id: " + id);
         }
     }
+
+    public Flight getFlightById(String flightId) {
+        Flight currentFlight = dynamoDBAdapter.getMapper().load(Flight.class, flightId);
+        if (currentFlight != null) {
+            return currentFlight;
+        }
+        else {
+            throw new RuntimeException("Cannot find flight with id: " + flightId);
+        }
+    }
 }
